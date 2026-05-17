@@ -1,11 +1,14 @@
 import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
-import { Users, Calendar, TrendingUp, Settings, Plus, Check, Trash2, Pencil, X, Lock, LogOut } from 'lucide-react';
+import { Users, Calendar, TrendingUp, Settings, Plus, Check, Trash2, Pencil, X, Lock, LogOut, Eye, EyeOff, User, ShieldAlert } from 'lucide-react';
 import { getReservations, updateReservation, deleteReservation, saveReservation, type Reservation } from '@/lib/reservations';
 
-const ADMIN_PIN = '1234';
+const ADMIN_USER = import.meta.env.VITE_ADMIN_USERNAME as string;
+const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD as string;
 const SESSION_KEY = 'bodrum_admin_auth';
+const MAX_ATTEMPTS = 5;
+const LOCK_DURATION = 30_000; // ms
 const TIME_SLOTS = ['12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
 
 const inputClass = 'w-full border border-gray-200 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-bodrum-gold transition-colors';
@@ -14,8 +17,13 @@ const labelClass = 'block text-xs font-semibold text-gray-500 uppercase tracking
 export default function Admin() {
   const { t } = useTranslation();
   const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === '1');
-  const [pin, setPin] = useState('');
-  const [pinError, setPinError] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+  const [loginError, setLoginError] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [lockSecs, setLockSecs] = useState(0);
 
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [editTarget, setEditTarget] = useState<Reservation | null>(null);
@@ -26,16 +34,33 @@ export default function Admin() {
     if (authed) setReservations(getReservations());
   }, [authed]);
 
+  useEffect(() => {
+    if (!lockedUntil) return;
+    const tick = () => {
+      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+      if (remaining <= 0) { setLockedUntil(null); setLockSecs(0); setAttempts(0); }
+      else setLockSecs(remaining);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [lockedUntil]);
+
   const refresh = () => setReservations(getReservations());
 
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
-    if (pin === ADMIN_PIN) {
+    if (lockedUntil && Date.now() < lockedUntil) return;
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
       sessionStorage.setItem(SESSION_KEY, '1');
+      setAttempts(0);
       setAuthed(true);
     } else {
-      setPinError(true);
-      setPin('');
+      const next = attempts + 1;
+      setAttempts(next);
+      setLoginError(true);
+      setPassword('');
+      if (next >= MAX_ATTEMPTS) setLockedUntil(Date.now() + LOCK_DURATION);
     }
   };
 
@@ -79,32 +104,115 @@ export default function Admin() {
     : revenueRaw.toLocaleString('uz-UZ') + ' UZS';
 
   if (!authed) {
+    const isLocked = !!lockedUntil && Date.now() < lockedUntil;
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-sm shadow-xl p-10 w-full max-w-sm text-center"
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          className="bg-white rounded-sm shadow-2xl w-full max-w-sm overflow-hidden"
         >
-          <div className="w-14 h-14 rounded-full bg-bodrum-gold/10 flex items-center justify-center mx-auto mb-6">
-            <Lock className="w-6 h-6 text-bodrum-gold" />
+          {/* Header band */}
+          <div className="bg-bodrum-navy px-8 py-7 text-center">
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <img src="/bodrum_logo.jpg" alt="Bodrum" className="w-10 h-10 rounded-full object-cover ring-2 ring-bodrum-gold/40" />
+              <span className="font-serif text-2xl font-bold tracking-wider text-bodrum-gold">BODRUM</span>
+            </div>
+            <p className="text-white/50 text-xs uppercase tracking-widest mt-1">Admin Portal</p>
           </div>
-          <h1 className="font-serif text-2xl text-bodrum-navy mb-2">{t('admin.login.title')}</h1>
-          <p className="text-gray-400 text-sm mb-8">PIN: 1234</p>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="password"
-              maxLength={4}
-              value={pin}
-              onChange={e => { setPin(e.target.value); setPinError(false); }}
-              placeholder="• • • •"
-              className="w-full border border-gray-200 rounded-sm px-4 py-3 text-center text-2xl tracking-[0.5em] focus:outline-none focus:border-bodrum-gold transition-colors"
-            />
-            {pinError && <p className="text-red-500 text-xs">{t('admin.login.error')}</p>}
-            <button type="submit" className="w-full bg-bodrum-navy text-white py-3 rounded-sm text-sm font-semibold uppercase tracking-widest hover:bg-bodrum-navy/90 transition-colors">
-              {t('admin.login.submit')}
-            </button>
-          </form>
+
+          {/* Form area */}
+          <div className="px-8 py-8">
+            <div className="flex items-center gap-2 mb-6">
+              <Lock className="w-4 h-4 text-bodrum-gold" />
+              <h2 className="text-bodrum-navy font-semibold text-sm uppercase tracking-widest">{t('admin.login.title')}</h2>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
+              {/* Username */}
+              <div>
+                <label className={labelClass}>Username</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={e => { setUsername(e.target.value); setLoginError(false); }}
+                    placeholder="Enter username"
+                    disabled={isLocked}
+                    className={`${inputClass} pl-9 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    autoComplete="username"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className={labelClass}>Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => { setPassword(e.target.value); setLoginError(false); }}
+                    placeholder="Enter password"
+                    disabled={isLocked}
+                    className={`${inputClass} pl-9 pr-10 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(v => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-bodrum-gold transition-colors"
+                    tabIndex={-1}
+                  >
+                    {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Error / lockout */}
+              <AnimatePresence mode="wait">
+                {isLocked ? (
+                  <motion.div
+                    key="locked"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-sm px-3 py-2.5"
+                  >
+                    <ShieldAlert className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <p className="text-red-600 text-xs">Account locked. Try again in <strong>{lockSecs}s</strong>.</p>
+                  </motion.div>
+                ) : loginError ? (
+                  <motion.div
+                    key="error"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-sm px-3 py-2.5"
+                  >
+                    <ShieldAlert className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <p className="text-red-600 text-xs">
+                      {t('admin.login.error')}{' '}
+                      {attempts > 0 && attempts < MAX_ATTEMPTS && (
+                        <span className="text-red-400">({MAX_ATTEMPTS - attempts} attempts left)</span>
+                      )}
+                    </p>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+
+              <button
+                type="submit"
+                disabled={isLocked}
+                className="w-full bg-bodrum-navy text-white py-3 rounded-sm text-sm font-semibold uppercase tracking-widest hover:bg-bodrum-gold transition-colors disabled:opacity-40 disabled:cursor-not-allowed mt-2"
+              >
+                {t('admin.login.submit')}
+              </button>
+            </form>
+          </div>
         </motion.div>
       </div>
     );
