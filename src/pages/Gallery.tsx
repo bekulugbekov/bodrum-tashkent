@@ -18,7 +18,7 @@ interface GalleryItem {
 const ITEMS: GalleryItem[] = [
   { id: 1,  src: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', alt: 'Mediterranean seafood platter',   category: 'food',     height: 'h-64' },
   { id: 2,  src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80', alt: 'Elegant dining room interior',  category: 'ambiance', height: 'h-80' },
-  { id: 3,  src: 'https://images.unsplash.com/photo-1544025162-d76538485649?w=800&q=80', alt: 'Herb-crusted lamb chops',          category: 'food',     height: 'h-56' },
+  { id: 3,  src: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&q=80', alt: 'Herb-crusted lamb chops',         category: 'food',     height: 'h-56' },
   { id: 4,  src: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80', alt: 'Private dining event setup',    category: 'events',   height: 'h-72' },
   { id: 5,  src: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&q=80', alt: 'Curated wine selection',        category: 'ambiance', height: 'h-64' },
   { id: 6,  src: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&q=80', alt: 'Fresh Mediterranean grain bowl', category: 'food',     height: 'h-72' },
