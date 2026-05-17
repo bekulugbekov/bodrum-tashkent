@@ -152,6 +152,18 @@ const resources = {
       "home.reviews.r4.text": "Brought the whole family — three generations! The children's play area kept the little ones happy while adults enjoyed an exquisite menu. Generous portions, amazing atmosphere.",
       "home.reviews.r5.text": "I moved to Tashkent recently and Bodrum quickly became my favorite restaurant. The Turkish tea ritual, the warm welcome every visit, the meze platter — simply perfect every time.",
       "home.reviews.r6.text": "As someone who takes lamb seriously, the herb-crusted lamb chops here are world-class. Perfectly cooked with an incredible spice profile. Bodrum truly elevates dining in Tashkent.",
+
+      "nav.gallery": "Gallery",
+      "gallery.label": "Our Gallery",
+      "gallery.title": "A Feast for the Eyes",
+      "gallery.subtitle": "Step inside Bodrum — moments of warmth, flavour, and celebration captured in every frame.",
+      "gallery.filter.all": "All",
+      "gallery.filter.food": "Food",
+      "gallery.filter.ambiance": "Ambiance",
+      "gallery.filter.events": "Events",
+      "gallery.cta.title": "Create Your Own Memory",
+      "gallery.cta.subtitle": "Every great evening begins with a reservation.",
+      "gallery.cta.button": "Reserve a Table",
     }
   },
   ru: {
@@ -304,6 +316,18 @@ const resources = {
       "home.reviews.r4.text": "Привёл всю семью — три поколения! В детской зоне малыши были счастливы, пока взрослые наслаждались меню. Щедрые порции, доступные цены, удивительная атмосфера.",
       "home.reviews.r5.text": "Недавно переехала в Ташкент и Bodrum быстро стал моим любимым рестораном. Чайный ритуал по-турецки, тёплый приём, тарелка мезе — здесь всё просто идеально.",
       "home.reviews.r6.text": "Как любитель баранины скажу: бараньи рёбрышки в травах здесь мирового уровня. Идеально приготовлены, невероятный букет специй. Bodrum поднимает планку ресторанов Ташкента.",
+
+      "nav.gallery": "Галерея",
+      "gallery.label": "Наша галерея",
+      "gallery.title": "Пир для глаз",
+      "gallery.subtitle": "Добро пожаловать в Bodrum — моменты тепла, вкуса и праздника в каждом кадре.",
+      "gallery.filter.all": "Все",
+      "gallery.filter.food": "Еда",
+      "gallery.filter.ambiance": "Атмосфера",
+      "gallery.filter.events": "Мероприятия",
+      "gallery.cta.title": "Создайте своё воспоминание",
+      "gallery.cta.subtitle": "Каждый прекрасный вечер начинается с бронирования.",
+      "gallery.cta.button": "Забронировать стол",
     }
   },
   uz: {
@@ -456,6 +480,18 @@ const resources = {
       "home.reviews.r4.text": "Butun oilamni olib keldim — uch avlod! Bolalar maydonchasida kichkintoylar xursand bo'ldi, kattalar esa menyudan bahramand bo'ldi. Mo'l porsiyalar, ajoyib muhit.",
       "home.reviews.r5.text": "Yaqinda Toshkentga ko'chib keldim va Bodrum tezda sevimli restoranim bo'ldi. Turk choy marosimi, iliq kutib olish, meze likopchasi — bu yerda hamma narsa mukammal.",
       "home.reviews.r6.text": "Qo'zichoq go'shtiga talabchan odam sifatida aytamanki, bu yerdagi o'tlar bilan qo'y qovurg'alari — dunyo darajasida. Mukammal pishirilgan, hayratlanarli ziravorlar. Bodrum Toshkent oshxonasini yangi darajaga ko'tarmoqda.",
+
+      "nav.gallery": "Galereya",
+      "gallery.label": "Galereyamiz",
+      "gallery.title": "Ko'zlar uchun ziyofat",
+      "gallery.subtitle": "Bodrum'ga xush kelibsiz — iliqlik, ta'm va bayram lahzalari har bir kadrda.",
+      "gallery.filter.all": "Barchasi",
+      "gallery.filter.food": "Taomlar",
+      "gallery.filter.ambiance": "Muhit",
+      "gallery.filter.events": "Tadbirlar",
+      "gallery.cta.title": "O'z xotirangizni yarating",
+      "gallery.cta.subtitle": "Har bir ajoyib kechalik band qilishdan boshlanadi.",
+      "gallery.cta.button": "Stol band qilish",
     }
   }
 };

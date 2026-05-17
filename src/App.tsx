@@ -6,6 +6,7 @@ import { MapPin, Phone, Mail, ArrowUp } from 'lucide-react';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
+import Gallery from './pages/Gallery';
 import Reservation from './pages/Reservation';
 import Admin from './pages/Admin';
 import About from './pages/About';
@@ -84,7 +85,7 @@ function Footer() {
   const navLinks = [
     { label: t('nav.home'), path: '/' },
     { label: t('nav.menu'), path: '/menu' },
-    { label: t('nav.reservation'), path: '/reservation' },
+    { label: t('nav.gallery'), path: '/gallery' },
     { label: t('nav.about'), path: '/about' },
   ];
   return (
@@ -182,6 +183,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="/reservation" element={<Reservation />} />
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
